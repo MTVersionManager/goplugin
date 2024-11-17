@@ -103,10 +103,8 @@ func (p *Plugin) Install(installDir string) error {
 
 func renamer(path string) string {
 	if !strings.HasPrefix(path, "go"+string(os.PathSeparator)+"bin") {
-		fmt.Printf("Discarded: %v\n", path)
 		return ""
 	}
-	fmt.Println("Trimmed prefix")
 	newpath := strings.TrimPrefix(path, "go"+string(os.PathSeparator)+"bin")
 	if newpath == string(os.PathSeparator) {
 		return ""
