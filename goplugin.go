@@ -61,10 +61,10 @@ func (p *Plugin) GetLatestVersion() (string, error) {
 	return version, nil
 }
 
-func (p *Plugin) Progress() *chan float64 {
+func (p *Plugin) Progress() chan float64 {
 	p.pw = new(progressWriter)
-	p.pw.ProgressChannel = make(chan float64)
-	return &p.pw.ProgressChannel
+	p.pw.ProgressChannel = make(chan float64, 1)
+	return p.pw.ProgressChannel
 }
 
 func (p *Plugin) Download(version string) error {
