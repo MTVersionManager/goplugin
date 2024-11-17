@@ -61,6 +61,7 @@ func (p *Plugin) GetLatestVersion() (string, error) {
 }
 
 func (p *Plugin) Progress() <-chan float64 {
+	p.pw = new(progressWriter)
 	p.pw.ProgressChannel = make(chan float64)
 	return p.pw.ProgressChannel
 }
