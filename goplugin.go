@@ -37,7 +37,6 @@ func (pw *progressWriter) Write(p []byte) (int, error) {
 	pw.downloaded += len(p)
 	pw.Content = append(pw.Content, p...)
 	if pw.total > 0 {
-		fmt.Println("Updating progress and sending message!")
 		pw.ProgressChannel <- float64(pw.downloaded) / float64(pw.total)
 	}
 	return len(p), nil
