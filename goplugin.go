@@ -89,12 +89,12 @@ func (p *Plugin) Download(version string) error {
 }
 
 func (p *Plugin) Install(installDir string) error {
-	err := p.pw.Resp.Body.Close()
+	reader := bytes.NewReader(p.pw.Content)
+	err := ExtractTarGZ(reader, installDir, renamer)
 	if err != nil {
 		return err
 	}
-	reader := bytes.NewReader(p.pw.Content)
-	err = ExtractTarGZ(reader, installDir, renamer)
+	err = p.pw.Resp.Body.Close()
 	if err != nil {
 		return err
 	}
