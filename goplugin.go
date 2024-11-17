@@ -107,7 +107,11 @@ func renamer(path string) string {
 		return ""
 	}
 	fmt.Println("Trimmed prefix")
-	return strings.TrimPrefix(path, "go"+string(os.PathSeparator)+"bin")
+	newpath := strings.TrimPrefix(path, "go"+string(os.PathSeparator)+"bin")
+	if newpath == string(os.PathSeparator) {
+		return ""
+	}
+	return newpath
 }
 
 func ExtractTarGZ(compressedStream io.Reader, directory string, renamer func(string) string) error {
