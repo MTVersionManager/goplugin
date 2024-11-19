@@ -6,6 +6,7 @@ import (
 	"compress/gzip"
 	"errors"
 	"fmt"
+	"github.com/MTVersionManager/mtvmplugin"
 	"io"
 	"log"
 	"net/http"
@@ -32,6 +33,9 @@ func (pw *progressWriter) Start() {
 		log.Fatal(err)
 	}
 }
+
+// Compile time check to make sure that the plugin is actually a valid MTVM plugin
+var _ mtvmplugin.Plugin = &Plugin{}
 
 func (pw *progressWriter) Write(p []byte) (int, error) {
 	pw.downloaded += len(p)
