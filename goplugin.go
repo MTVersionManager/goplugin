@@ -64,13 +64,7 @@ func (p *Plugin) GetLatestVersion() (string, error) {
 	return version, nil
 }
 
-func (p *Plugin) Progress() chan float64 {
-	p.pw = new(progressWriter)
-	p.pw.ProgressChannel = make(chan float64)
-	return p.pw.ProgressChannel
-}
-
-func (p *Plugin) Download(version string) error {
+func (p *Plugin) Download(version string, progress chan float64) error {
 	url := createUrl(version)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -82,11 +76,10 @@ func (p *Plugin) Download(version string) error {
 	if resp.ContentLength <= 0 {
 		return errors.New("error when getting content length")
 	}
-	channel := p.pw.ProgressChannel
 	p.pw = &progressWriter{
 		total:           int(resp.ContentLength),
 		Resp:            resp,
-		ProgressChannel: channel,
+		ProgressChannel: progress,
 	}
 	go p.pw.Start()
 	return nil
