@@ -6,11 +6,13 @@ import (
 	"compress/gzip"
 	"errors"
 	"fmt"
+	"github.com/Masterminds/semver/v3"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/MTVersionManager/mtvmplugin"
@@ -88,7 +90,7 @@ func (p *Plugin) Download(version string, progress chan float64) error {
 
 func (p *Plugin) Install(installDir string) error {
 	reader := bytes.NewReader(p.pw.Content)
-	err := ExtractTarGZ(reader, installDir, renamer)
+	err := extractTarGZ(reader, installDir, rename)
 	if err != nil {
 		return err
 	}
@@ -99,11 +101,28 @@ func (p *Plugin) Install(installDir string) error {
 	return nil
 }
 
-func renamer(path string) string {
+func (p *Plugin) Sort(stringVersions []string) ([]string, error) {
+	var versions []*semver.Version
+	for _, versionString := range stringVersions {
+		version, err := semver.NewVersion(versionString)
+		if err != nil {
+			return nil, err
+		}
+		versions = append(versions, version)
+	}
+	sort.Sort(semver.Collection(versions))
+	var sortedVersions []string
+	for _, version := range versions {
+		sortedVersions = append(sortedVersions, version.Original())
+	}
+	return sortedVersions, nil
+}
+
+func rename(path string) string {
 	return strings.TrimPrefix(path, "go"+string(os.PathSeparator))
 }
 
-func ExtractTarGZ(compressedStream io.Reader, directory string, renamer func(string) string) error {
+func extractTarGZ(compressedStream io.Reader, directory string, renamer func(string) string) error {
 	gzipReader, err := gzip.NewReader(compressedStream)
 	if err != nil {
 		return fmt.Errorf("gzip reader error: %w", err)
@@ -115,9 +134,9 @@ func ExtractTarGZ(compressedStream io.Reader, directory string, renamer func(str
 	tarReader := tar.NewReader(gzipReader)
 	var header *tar.Header
 	for header, err = tarReader.Next(); err == nil; header, err = tarReader.Next() {
-		renamerResult := renamer(header.Name)
-		if renamerResult != "" && renamerResult != string(os.PathSeparator) {
-			path := filepath.Join(directory, renamerResult)
+		renameResult := renamer(header.Name)
+		if renameResult != "" && renameResult != string(os.PathSeparator) {
+			path := filepath.Join(directory, renameResult)
 			switch header.Typeflag {
 			case tar.TypeDir:
 				if err := os.Mkdir(path, 0755); err != nil {
