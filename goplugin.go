@@ -6,13 +6,14 @@ import (
 	"compress/gzip"
 	"errors"
 	"fmt"
-	"github.com/MTVersionManager/mtvmplugin"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/MTVersionManager/mtvmplugin"
 )
 
 type Plugin struct {
@@ -99,14 +100,7 @@ func (p *Plugin) Install(installDir string) error {
 }
 
 func renamer(path string) string {
-	if !strings.HasPrefix(path, "go"+string(os.PathSeparator)+"bin") {
-		return ""
-	}
-	newpath := strings.TrimPrefix(path, "go"+string(os.PathSeparator)+"bin")
-	if newpath == string(os.PathSeparator) {
-		return ""
-	}
-	return newpath
+	return strings.TrimPrefix(path, "go"+string(os.PathSeparator))
 }
 
 func ExtractTarGZ(compressedStream io.Reader, directory string, renamer func(string) string) error {
@@ -122,7 +116,7 @@ func ExtractTarGZ(compressedStream io.Reader, directory string, renamer func(str
 	var header *tar.Header
 	for header, err = tarReader.Next(); err == nil; header, err = tarReader.Next() {
 		renamerResult := renamer(header.Name)
-		if renamerResult != "" {
+		if renamerResult != "" && renamerResult != string(os.PathSeparator) {
 			path := filepath.Join(directory, renamerResult)
 			switch header.Typeflag {
 			case tar.TypeDir:
