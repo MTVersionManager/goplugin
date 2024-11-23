@@ -11,7 +11,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path"
+	"path/filepath"
 	"sort"
 	"strings"
 
@@ -102,20 +102,30 @@ func (p *Plugin) Install(installDir string) error {
 }
 
 func (p *Plugin) Use(installDir string, pathDir string) error {
-	err := os.Setenv("GOROOT", installDir)
-	if err != nil {
-		return err
-	}
-	contents, err := os.ReadDir(path.Join(installDir, "bin"))
+	contents, err := os.ReadDir(filepath.Join(installDir, "bin"))
 	if err != nil {
 		return err
 	}
 	for _, file := range contents {
 		if !file.IsDir() {
-			err := os.Symlink(path.Join(installDir, "bin", file.Name()), path.Join(pathDir, file.Name()))
+			linkPath := filepath.Join(pathDir, file.Name())
+			_, err := os.Stat(linkPath)
+			if err != nil && !os.IsNotExist(err) {
+				return err
+			} else if !os.IsNotExist(err) {
+				// Delete old symlink if it exists
+				err := os.Remove(linkPath)
+				if err != nil {
+					return err
+				}
+			}
+			// Create new symlink
+			err = os.Symlink(filepath.Join(installDir, "bin", file.Name()), linkPath)
 			if err != nil {
 				return err
 			}
+			// Give symlink execution permissions
+			err = os.Chmod(linkPath, 0755)
 		}
 	}
 	return nil
@@ -156,7 +166,7 @@ func extractTarGZ(compressedStream io.Reader, directory string, renamer func(str
 	for header, err = tarReader.Next(); err == nil; header, err = tarReader.Next() {
 		renameResult := renamer(header.Name)
 		if renameResult != "" && renameResult != string(os.PathSeparator) {
-			joined := path.Join(directory, renameResult)
+			joined := filepath.Join(directory, renameResult)
 			switch header.Typeflag {
 			case tar.TypeDir:
 				if err := os.Mkdir(joined, 0755); err != nil {
