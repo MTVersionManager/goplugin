@@ -1,7 +1,6 @@
 package goplugin
 
 import (
-	"log"
 	"testing"
 )
 
@@ -15,7 +14,7 @@ func TestSort(t *testing.T) {
 	}
 	for i, ver := range sortedVers {
 		if ver != wantVers[i] {
-			log.Fatalf("want %s, got %s", wantVers, sortedVers)
+			t.Fatalf("want %s, got %s", wantVers, sortedVers)
 		}
 	}
 }
