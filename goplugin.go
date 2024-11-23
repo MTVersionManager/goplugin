@@ -11,7 +11,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
+	"path"
 	"sort"
 	"strings"
 
@@ -101,6 +101,26 @@ func (p *Plugin) Install(installDir string) error {
 	return nil
 }
 
+func (p *Plugin) Use(installDir string, pathDir string) error {
+	err := os.Setenv("GOROOT", installDir)
+	if err != nil {
+		return err
+	}
+	contents, err := os.ReadDir(path.Join(installDir, "bin"))
+	if err != nil {
+		return err
+	}
+	for _, file := range contents {
+		if !file.IsDir() {
+			err := os.Symlink(path.Join(installDir, "bin", file.Name()), path.Join(pathDir, file.Name()))
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
 func (p *Plugin) Sort(stringVersions []string) ([]string, error) {
 	var versions []*semver.Version
 	for _, versionString := range stringVersions {
@@ -136,14 +156,14 @@ func extractTarGZ(compressedStream io.Reader, directory string, renamer func(str
 	for header, err = tarReader.Next(); err == nil; header, err = tarReader.Next() {
 		renameResult := renamer(header.Name)
 		if renameResult != "" && renameResult != string(os.PathSeparator) {
-			path := filepath.Join(directory, renameResult)
+			joined := path.Join(directory, renameResult)
 			switch header.Typeflag {
 			case tar.TypeDir:
-				if err := os.Mkdir(path, 0755); err != nil {
+				if err := os.Mkdir(joined, 0755); err != nil {
 					return fmt.Errorf("ExtractTarGz: Mkdir() failed: %w", err)
 				}
 			case tar.TypeReg:
-				outFile, err := os.Create(path)
+				outFile, err := os.Create(joined)
 				if err != nil {
 					return fmt.Errorf("ExtractTarGz: Create() failed: %w", err)
 				}
