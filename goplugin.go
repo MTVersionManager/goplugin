@@ -151,6 +151,9 @@ func (p *Plugin) Sort(stringVersions []string) ([]string, error) {
 func (p *Plugin) GetCurrentVersion(installDir string, pathDir string) (string, error) {
 	linkSource, err := filepath.EvalSymlinks(filepath.Join(pathDir, "go") + BinaryExtension)
 	if err != nil {
+		if os.IsNotExist(err) {
+			return "", nil
+		}
 		return "", err
 	}
 	return strings.TrimSuffix(strings.TrimPrefix(linkSource, installDir+string(os.PathSeparator)), string(os.PathSeparator)+"go"+BinaryExtension), nil

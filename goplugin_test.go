@@ -27,17 +27,17 @@ func TestGetCurrentVersion(t *testing.T) {
 		t.Fatal(err)
 	}
 	installDir := filepath.Join(homeDir, "testInstallDir")
+	versionDir := filepath.Join(installDir, "1.23.3")
+	err = os.MkdirAll(versionDir, 0755)
+	if err != nil {
+		t.Fatal(err)
+	}
 	defer func() {
 		err = os.RemoveAll(installDir)
 		if err != nil {
 			t.Fatal(err)
 		}
 	}()
-	versionDir := filepath.Join(installDir, "1.23.3")
-	err = os.MkdirAll(versionDir, 0755)
-	if err != nil {
-		t.Fatal(err)
-	}
 	ogFilePath := filepath.Join(versionDir, "go"+BinaryExtension)
 	file, err := os.Create(ogFilePath)
 	if err != nil {
@@ -48,13 +48,13 @@ func TestGetCurrentVersion(t *testing.T) {
 		t.Fatal(err)
 	}
 	pathDir := filepath.Join(homeDir, "testPathDir")
+	err = os.MkdirAll(pathDir, 0755)
 	defer func() {
 		err = os.RemoveAll(pathDir)
 		if err != nil {
 			t.Fatal(err)
 		}
 	}()
-	err = os.MkdirAll(pathDir, 0755)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -69,5 +69,42 @@ func TestGetCurrentVersion(t *testing.T) {
 	}
 	if ver != "1.23.3" {
 		t.Fatalf("want 1.23.3, got %s", ver)
+	}
+}
+
+func TestGetCurrentVersionNotSet(t *testing.T) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		t.Fatal(err)
+	}
+	installDir := filepath.Join(homeDir, "testInstallDir")
+	err = os.MkdirAll(installDir, 0755)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		err = os.RemoveAll(installDir)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}()
+	pathDir := filepath.Join(homeDir, "testPathDir")
+	err = os.MkdirAll(pathDir, 0755)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer func() {
+		err = os.RemoveAll(pathDir)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}()
+	plugin := &Plugin{}
+	ver, err := plugin.GetCurrentVersion(installDir, pathDir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if ver != "" {
+		t.Fatalf("want empty string, got %s", ver)
 	}
 }
