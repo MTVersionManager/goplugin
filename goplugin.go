@@ -126,6 +126,9 @@ func (p *Plugin) Use(installDir string, pathDir string) error {
 			}
 			// Give symlink execution permissions
 			err = os.Chmod(linkPath, 0755)
+			if err != nil {
+				return err
+			}
 		}
 	}
 	return nil
