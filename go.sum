@@ -8,5 +8,7 @@ github.com/MTVersionManager/mtvmplugin v0.0.0-20241123190034-39e07c9b14ee h1:G4p
 github.com/MTVersionManager/mtvmplugin v0.0.0-20241123190034-39e07c9b14ee/go.mod h1:eo3CICn6Ovu09INVMm0iInMDl8hUgHYSCIITB0IVLJI=
 github.com/MTVersionManager/mtvmplugin v0.0.0-20241125185214-59fe4d81c51a h1:bKbDqcIwItL38H7waeVdI5vTwnexgLQFvBkINMIXyGA=
 github.com/MTVersionManager/mtvmplugin v0.0.0-20241125185214-59fe4d81c51a/go.mod h1:eo3CICn6Ovu09INVMm0iInMDl8hUgHYSCIITB0IVLJI=
+github.com/MTVersionManager/mtvmplugin v0.0.0-20241126221723-d2f7514554c8 h1:fZwCSatqMjJ42fMtZJJ5m6bTScBGbejHAthGOXLgpYA=
+github.com/MTVersionManager/mtvmplugin v0.0.0-20241126221723-d2f7514554c8/go.mod h1:eo3CICn6Ovu09INVMm0iInMDl8hUgHYSCIITB0IVLJI=
 github.com/Masterminds/semver/v3 v3.3.1 h1:QtNSWtVZ3nBfk8mAOu/B6v7FMJ+NHTIgUPi7rj+4nv4=
 github.com/Masterminds/semver/v3 v3.3.1/go.mod h1:4V+yj/TJE1HU9XfppCwVMZq3I84lprf4nC11bSS5beM=

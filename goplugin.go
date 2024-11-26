@@ -134,6 +134,24 @@ func (p *Plugin) Use(installDir string, pathDir string) error {
 	return nil
 }
 
+func (p *Plugin) Remove(installDir string, pathDir string, inUse bool) error {
+	if inUse {
+		err := os.RemoveAll(filepath.Join(pathDir, "go") + BinaryExtension)
+		if err != nil && !os.IsNotExist(err) {
+			return err
+		}
+		err = os.RemoveAll(filepath.Join(pathDir, "gofmt") + BinaryExtension)
+		if err != nil && !os.IsNotExist(err) {
+			return err
+		}
+	}
+	err := os.RemoveAll(installDir)
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	}
+	return nil
+}
+
 func (p *Plugin) Sort(stringVersions []string) ([]string, error) {
 	var versions []*semver.Version
 	for _, versionString := range stringVersions {
