@@ -1,0 +1,11 @@
+{
+  "name": "go",
+  "version": "0.0.0",
+  "downloads": [
+    {
+      "os": "linux",
+      "arch": "amd64",
+      "url": "placeholder"
+    }
+  ]
+}
