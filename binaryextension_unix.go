@@ -2,4 +2,4 @@
 
 package goplugin
 
-var BinaryExtension string = ""
+const BinaryExtension string = ""

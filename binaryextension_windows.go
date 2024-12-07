@@ -2,4 +2,4 @@
 
 package goplugin
 
-var binaryExtension string = ".exe"
+const binaryExtension string = ".exe"
