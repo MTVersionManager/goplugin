@@ -189,7 +189,7 @@ func extractTarGZ(compressedStream io.Reader, directory string, renamer func(str
 	if err != nil {
 		return fmt.Errorf("gzip reader error: %w", err)
 	}
-	err = os.MkdirAll(directory, 0755)
+	err = os.MkdirAll(directory, 0777)
 	if err != nil {
 		return err
 	}
@@ -201,7 +201,7 @@ func extractTarGZ(compressedStream io.Reader, directory string, renamer func(str
 			joined := filepath.Join(directory, renameResult)
 			switch header.Typeflag {
 			case tar.TypeDir:
-				if err := os.Mkdir(joined, 0755); err != nil {
+				if err := os.Mkdir(joined, 0777); err != nil {
 					return fmt.Errorf("ExtractTarGz: Mkdir() failed: %w", err)
 				}
 			case tar.TypeReg:
