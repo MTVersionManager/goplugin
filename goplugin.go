@@ -1,4 +1,4 @@
-package goplugin
+package main
 
 import (
 	"archive/tar"

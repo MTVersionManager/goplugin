@@ -1,5 +1,5 @@
 //go:build unix
 
-package goplugin
+package main
 
 const BinaryExtension string = ""

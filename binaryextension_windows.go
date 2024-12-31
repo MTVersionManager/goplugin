@@ -1,5 +1,5 @@
 //go:build windows
 
-package goplugin
+package main
 
 const binaryExtension string = ".exe"
