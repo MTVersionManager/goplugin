@@ -222,6 +222,9 @@ func TestProgressWriter_Write(t *testing.T) {
 			}
 		}
 	}
+	if pw.downloaded != 50 {
+		t.Fatalf("want total size 50, got %v", pw.downloaded)
+	}
 	if len(pw.Content) != 50 {
 		t.Fatalf("want 50 bytes of content, got %v bytes of content", len(pw.Content))
 	}
