@@ -187,7 +187,7 @@ func TestRename(t *testing.T) {
 	}
 }
 
-func TestWrite(t *testing.T) {
+func TestProgressWriter_Write(t *testing.T) {
 	pw := progressWriter{
 		total:           100,
 		ProgressChannel: make(chan float64),
