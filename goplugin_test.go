@@ -181,6 +181,13 @@ func TestRemoveCurrentVerNotSet(t *testing.T) {
 
 }
 
+func TestRename(t *testing.T) {
+	renamed := rename(filepath.Join("go", "someFile"))
+	if renamed != "someFile" {
+		t.Fatalf("want someFile, got %s", renamed)
+	}
+}
+
 func createTestDirs() (testDirs, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
