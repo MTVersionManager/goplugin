@@ -38,7 +38,7 @@ func TestGetCurrentVersion(t *testing.T) {
 		}
 	}()
 	versionDir := filepath.Join(dirs.InstallDir, "1.23.3")
-	err = os.MkdirAll(versionDir, 0777)
+	err = os.MkdirAll(versionDir, 0o777)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -178,7 +178,6 @@ func TestRemoveCurrentVerNotSet(t *testing.T) {
 	if !os.IsNotExist(err) {
 		t.Fatal(err)
 	}
-
 }
 
 func TestRename(t *testing.T) {
@@ -234,12 +233,12 @@ func createTestDirs() (testDirs, error) {
 		return testDirs{}, err
 	}
 	installDir := filepath.Join(homeDir, "testInstallDir")
-	err = os.MkdirAll(installDir, 0777)
+	err = os.MkdirAll(installDir, 0o777)
 	if err != nil {
 		return testDirs{}, err
 	}
 	pathDir := filepath.Join(homeDir, "testPathDir")
-	err = os.MkdirAll(pathDir, 0777)
+	err = os.MkdirAll(pathDir, 0o777)
 	if err != nil {
 		return testDirs{}, err
 	}

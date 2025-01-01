@@ -6,7 +6,6 @@ import (
 	"compress/gzip"
 	"errors"
 	"fmt"
-	"github.com/Masterminds/semver/v3"
 	"io"
 	"log"
 	"net/http"
@@ -14,6 +13,8 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+
+	"github.com/Masterminds/semver/v3"
 
 	"github.com/MTVersionManager/mtvmplugin"
 )
@@ -125,7 +126,7 @@ func (p *Plugin) Use(installDir string, pathDir string) error {
 				return err
 			}
 			// Give symlink execution permissions
-			err = os.Chmod(linkPath, 0755)
+			err = os.Chmod(linkPath, 0o755)
 			if err != nil {
 				return err
 			}
@@ -189,7 +190,7 @@ func extractTarGZ(compressedStream io.Reader, directory string, renamer func(str
 	if err != nil {
 		return fmt.Errorf("gzip reader error: %w", err)
 	}
-	err = os.MkdirAll(directory, 0777)
+	err = os.MkdirAll(directory, 0o777)
 	if err != nil {
 		return err
 	}
@@ -201,7 +202,7 @@ func extractTarGZ(compressedStream io.Reader, directory string, renamer func(str
 			joined := filepath.Join(directory, renameResult)
 			switch header.Typeflag {
 			case tar.TypeDir:
-				if err := os.Mkdir(joined, 0777); err != nil {
+				if err := os.Mkdir(joined, 0o777); err != nil {
 					return fmt.Errorf("ExtractTarGz: Mkdir() failed: %w", err)
 				}
 			case tar.TypeReg:
