@@ -188,6 +188,46 @@ func TestRename(t *testing.T) {
 	}
 }
 
+func TestWrite(t *testing.T) {
+	pw := progressWriter{
+		total:           100,
+		ProgressChannel: make(chan float64),
+	}
+	returnDataChannel := make(chan struct {
+		int
+		error
+	})
+	dataToWrite := make([]byte, 50)
+	go func() {
+		written, err := pw.Write(dataToWrite)
+		returnDataChannel <- struct {
+			int
+			error
+		}{
+			written,
+			err,
+		}
+	}()
+	for i := 0; i < 2; i++ {
+		select {
+		case returnedData := <-returnDataChannel:
+			if returnedData.error != nil {
+				t.Fatal(returnedData.error)
+			}
+			if returnedData.int != 50 {
+				t.Fatalf("want 50 bytes written, got %v bytes written", returnedData.int)
+			}
+		case progress := <-pw.ProgressChannel:
+			if progress != 0.5 {
+				t.Errorf("want 0.5 progress, got %v progress", progress)
+			}
+		}
+	}
+	if len(pw.Content) != 50 {
+		t.Fatalf("want 50 bytes of content, got %v bytes of content", len(pw.Content))
+	}
+}
+
 func createTestDirs() (testDirs, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
